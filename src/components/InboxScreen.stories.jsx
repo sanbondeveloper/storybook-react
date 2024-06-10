@@ -1,5 +1,6 @@
 import { Provider } from 'react-redux';
 import { http, HttpResponse } from 'msw';
+import { fireEvent, waitFor, within, waitForElementToBeRemoved } from '@storybook/test';
 
 import { MockedState } from './TaskList.stories';
 import store from '../lib/store';
@@ -21,6 +22,14 @@ export const Default = {
         }),
       ],
     },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await waitForElementToBeRemoved(await canvas.findByTestId('loading'));
+    await waitFor(async () => {
+      await fireEvent.click(canvas.getByLabelText('pinTask-1'));
+      await fireEvent.click(canvas.getByLabelText('pinTask-3'));
+    });
   },
 };
 
